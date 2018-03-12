@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Science Fiction GIPHYs</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+
+    </script>
+    <style type="text/css">
+        button,
+        div,
+        form,
+        input {
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align:center" ;>
+        Science Fiction TV Series
+    </h1>
+
+    <div id="GiphsGoHere">
+    </div>
+    <!--Buttons-->
+    <div id="button">
+        <button data-series="fringe">Fringe</button-data-series>
+            <button data-series="doctorwho">Doctor Who</button-data-series>
+                <button data-series="blakes7">Blake's 7</button-data-series>
+                    <button data-series="logansrun">Logan's Run</button-data-series>
+                        <button data-series="childrenstones">Children of the Stones</button-data-series>
+                            <button data-series="babylon5">Babylon 5</button-data-series>
+                                <button data-series="battlestar">Battlestar Galactica</button-data-series>
+                                    <button data-series="lifeonmars">Life on Mars</button-data-series>
+                                        <button data-series="12monkeys">12 Monkeys</button-data-series>
+                                            <button data-series="buckrogers">Buck Rogers</button-data-series>
+                                                <br>
+    </div>
+    <div id="scifi-shows"></div>
+    <!--Form input label-->
+    <form id="scifi-form">
+        <label for="scifi-input">Find SciFi GIPHYs!</label>
+        <input type="text" id="scifi-input">
+        <br>
+        <!--Form button triggers new movie to be added-->
+        <input id="add-show" type="submit" value="Add a Show!">
+
+    </form>
+
+    </div>
+
+    <!--Start of js script-->
+    <script type="text/javascript">
+        var shows;
+        var showDiv;
+        var showImage;
+        var x;
+        var p;
+
+        //Array of Series
+        var series = ['Fringe', 'Doctor Who', 'Blakes 7', 'Logans Run',
+            'Children of the Stones', 'Babylon 5', 'Battlestar Galactica',
+            'Life on Mars', '12 Monkeys']
+
+        //Function for rendering buttons
+        function renderButtons() {
+            //Delete buttons before adding new buttons
+            $("#scifi-view").empty();
+            //Loop through series array
+            for (var i = 0; i < series.length; i++) {
+                //Dynamically generate new buttons for each series in array
+                var a = $("<button>");
+                //Add a class
+                a.addClass("show");
+                //Add data-attribute with a value of show at index i
+                a.text(shows[i]);
+                //Adding button to HTML
+                $("#scifi-view").append(a);
+            }
+        }
+        //Function where one button is clicked
+        $("#add-show").on("click", function () {
+            event.preventDefault();
+            //Grab text from input box
+            var series = $(shows.val().trim());
+            shows.push(series);
+            //calling render Buttons
+            renderButtons();
+
+        });
+
+
+
+
+        $('button').on('click', function () {
+
+            var x = $(this).data(series);
+
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q='fringe'+'&api_key=TsXJGjnePkOaqsiylGCpL983OaEFIOb9&limit=10'"
+
+            $.ajax({
+                url: queryURL, method: "GET"
+            })
+                .done(function (response) {
+                    console.log(response);
+
+                    for (var i = 0; i < response.data.length, i++;) {
+                        var showDiv = $('<div>');
+
+                        var p = $('<p>').text("Rating:  " + response.data[i].rating);
+                        console.log(response.data);
+                        var showImage = $('<img>');
+                        showImage.attr('src', response.data[i].images.fixed_height.url);
+                        showDiv.append(p);
+                        showDiv.append(showImage);
+                        $("#giphsgohere").append(showDiv);
+
+                    }
+                })
+
+        })
+
+
+    </script>
+</body>
+
+</html>
