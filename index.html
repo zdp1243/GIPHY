@@ -20,7 +20,7 @@
 </head>
 
 <body>
-    <h1 style="text-align:center" ;>
+    <h1 style="text-align:center">
         Science Fiction TV Series
     </h1>
 
@@ -28,16 +28,16 @@
     </div>
     <!--Buttons-->
     <div id="button">
-        <button data-series="fringe">Fringe</button-data-series>
-            <button data-series="doctorwho">Doctor Who</button-data-series>
-                <button data-series="blakes7">Blake's 7</button-data-series>
-                    <button data-series="logansrun">Logan's Run</button-data-series>
-                        <button data-series="childrenstones">Children of the Stones</button-data-series>
-                            <button data-series="babylon5">Babylon 5</button-data-series>
-                                <button data-series="battlestar">Battlestar Galactica</button-data-series>
-                                    <button data-series="lifeonmars">Life on Mars</button-data-series>
-                                        <button data-series="12monkeys">12 Monkeys</button-data-series>
-                                            <button data-series="buckrogers">Buck Rogers</button-data-series>
+        <button class="show-giphs" data-series="fringe">Fringe</button-data-series>
+            <button class="show-giphs" data-series="doctor who">Doctor Who</button-data-series>
+                <button class="show-giphs" data-series="blakes 7">Blake's 7</button-data-series>
+                    <button class="show-giphs" data-series="logans run">Logan's Run</button-data-series>
+                        <button class="show-giphs" data-series="children of the stones">Children of the Stones</button-data-series>
+                            <button class="show-giphs" data-series="babylon 5">Babylon 5</button-data-series>
+                                <button class="show-giphs" data-series="battlestar galactica">Battlestar Galactica</button-data-series>
+                                    <button class="show-giphs" data-series="life on mars">Life on Mars</button-data-series>
+                                        <button class="show-giphs" data-series="12 monkeys">12 Monkeys</button-data-series>
+                                            <button class="show-giphs" data-series="buck rogers">Buck Rogers</button-data-series>
                                                 <br>
     </div>
     <div id="scifi-shows"></div>
@@ -55,11 +55,11 @@
 
     <!--Start of js script-->
     <script type="text/javascript">
-        var shows;
-        var showDiv;
-        var showImage;
-        var x;
-        var p;
+        // var shows;
+        // var showDiv;
+        // var showImage;
+        // var x;
+        // var p;
 
         //Array of Series
         var series = ['Fringe', 'Doctor Who', 'Blakes 7', 'Logans Run',
@@ -86,38 +86,38 @@
         $("#add-show").on("click", function () {
             event.preventDefault();
             //Grab text from input box
-            var series = $(shows.val().trim());
-            shows.push(series);
-            //calling render Buttons
-            renderButtons();
-
+            var newShow = $("#scifi-input").val().trim();
+            //New Buttons
+            var newButton = $("<button class='show-giphs' data-series='" + newShow + "'>" + newShow + "</button>");
+            $("#button").append(newButton);
         });
 
+        //Event listener for button
+        $(document).on('click', '.show-giphs', function () {
 
+            var x = $(this).attr("data-series");
+            console.log(x);
+            //Making URL/API a variable
 
-
-        $('button').on('click', function () {
-
-            var x = $(this).data(series);
-
-            var queryURL = "https://api.giphy.com/v1/gifs/search?q='fringe'+'&api_key=TsXJGjnePkOaqsiylGCpL983OaEFIOb9&limit=10'"
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + x + "&api_key=TsXJGjnePkOaqsiylGCpL983OaEFIOb9&limit=10"
 
             $.ajax({
                 url: queryURL, method: "GET"
             })
-                .done(function (response) {
-                    console.log(response);
+                .then(function (response) {
+                    console.log(response.data.length);
 
-                    for (var i = 0; i < response.data.length, i++;) {
+                    for (var i = 0; i < response.data.length; i++) {
                         var showDiv = $('<div>');
 
                         var p = $('<p>').text("Rating:  " + response.data[i].rating);
-                        console.log(response.data);
+
                         var showImage = $('<img>');
                         showImage.attr('src', response.data[i].images.fixed_height.url);
-                        showDiv.append(p);
                         showDiv.append(showImage);
-                        $("#giphsgohere").append(showDiv);
+                        showDiv.append(p);
+                        $("#GiphsGoHere").append(showDiv);
+
 
                     }
                 })
