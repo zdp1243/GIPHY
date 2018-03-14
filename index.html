@@ -24,26 +24,23 @@
         Science Fiction TV Series
     </h1>
 
-    <div id="GiphsGoHere">
-    </div>
     <!--Buttons-->
     <div id="button">
         <button class="show-giphs" data-series="fringe">Fringe</button-data-series>
             <button class="show-giphs" data-series="doctor who">Doctor Who</button-data-series>
-                <button class="show-giphs" data-series="blakes 7">Blake's 7</button-data-series>
-                    <button class="show-giphs" data-series="logans run">Logan's Run</button-data-series>
-                        <button class="show-giphs" data-series="children of the stones">Children of the Stones</button-data-series>
-                            <button class="show-giphs" data-series="babylon 5">Babylon 5</button-data-series>
-                                <button class="show-giphs" data-series="battlestar galactica">Battlestar Galactica</button-data-series>
-                                    <button class="show-giphs" data-series="life on mars">Life on Mars</button-data-series>
-                                        <button class="show-giphs" data-series="12 monkeys">12 Monkeys</button-data-series>
-                                            <button class="show-giphs" data-series="buck rogers">Buck Rogers</button-data-series>
-                                                <br>
+                <button class="show-giphs" data-series="logans run">Logan's Run</button-data-series>
+                    <button class="show-giphs" data-series="stargate">Stargate</button-data-series>
+                        <button class="show-giphs" data-series="babylon 5">Babylon 5</button-data-series>
+                            <button class="show-giphs" data-series="battlestar galactica">Battlestar Galactica</button-data-series>
+                                <button class="show-giphs" data-series="life on mars">Life on Mars</button-data-series>
+                                    <button class="show-giphs" data-series="12 monkeys">12 Monkeys</button-data-series>
+                                        <button class="show-giphs" data-series="buck rogers">Buck Rogers</button-data-series>
+                                            <br>
     </div>
     <div id="scifi-shows"></div>
     <!--Form input label-->
     <form id="scifi-form">
-        <label for="scifi-input">Find SciFi GIPHYs!</label>
+        <label for="scifi-input">Find GIPHYs!</label>
         <input type="text" id="scifi-input">
         <br>
         <!--Form button triggers new movie to be added-->
@@ -51,20 +48,21 @@
 
     </form>
 
+    <div id="GiphsGoHere">
+    </div>
+
     </div>
 
     <!--Start of js script-->
     <script type="text/javascript">
-        // var shows;
-        // var showDiv;
-        // var showImage;
-        // var x;
-        // var p;
 
         //Array of Series
-        var series = ['Fringe', 'Doctor Who', 'Blakes 7', 'Logans Run',
-            'Children of the Stones', 'Babylon 5', 'Battlestar Galactica',
+        var series = ['Fringe', 'Doctor Who', 'Logans Run',
+            'Stargate', 'Babylon 5', 'Battlestar Galactica',
             'Life on Mars', '12 Monkeys']
+        var dictionary = ['Firefly', 'West World', 'Black Mirror', 'X-Files', 'The Expanse',
+            'Twin Peaks', 'Sliders', 'Orphan Black', 'Man in the High Castle', 'Farscape',
+            'Buck Rogers', 'Lost in Space', 'Torchwood', 'Red Dwarf']
 
         //Function for rendering buttons
         function renderButtons() {
@@ -87,9 +85,25 @@
             event.preventDefault();
             //Grab text from input box
             var newShow = $("#scifi-input").val().trim();
-            //New Buttons
-            var newButton = $("<button class='show-giphs' data-series='" + newShow + "'>" + newShow + "</button>");
-            $("#button").append(newButton);
+            // Make Boolean statement to check if show is in the dictionary array.
+            var Existant = true;
+            //Check against dictionary
+            for (var i = 0; i < dictionary.length; i++) {
+                if (dictionary[i] === newShow) {
+                    //New Buttons
+                    var newButton = $("<button class='show-giphs' data-series='" + newShow + "'>" + newShow + "</button>");
+                    $("#button").append(newButton);
+                    Existant = true;
+                    //If the for loop finds word in dictionary array, it will break out of loop instead of 
+                    //continuing and trigger the alert when it doesn't equal the next word in the array. 
+                    break;
+                }
+                else Existant = false;
+
+            }
+            if (Existant === false) {
+                alert("Your show isn't cool enough to be in the dictionary! :-)");
+            }
         });
 
         //Event listener for button
@@ -105,7 +119,7 @@
                 url: queryURL, method: "GET"
             })
                 .then(function (response) {
-                    console.log(response.data.length);
+                    console.log(response);
 
                     for (var i = 0; i < response.data.length; i++) {
                         var showDiv = $('<div>');
@@ -113,16 +127,35 @@
                         var p = $('<p>').text("Rating:  " + response.data[i].rating);
 
                         var showImage = $('<img>');
-                        showImage.attr('src', response.data[i].images.fixed_height.url);
+
+                        showImage.attr('src', response.data[i].images.fixed_height_small_still.url);
+                        showImage.attr('data-state', 'still');
+                        showImage.attr('data-still', response.data[i].images.fixed_height_small_still.url);
+                        showImage.attr('data-animate', response.data[i].images.fixed_height_small.url);
+                        showImage.addClass("gif")
                         showDiv.append(showImage);
                         showDiv.append(p);
-                        $("#GiphsGoHere").append(showDiv);
+                        $("#GiphsGoHere").prepend(showDiv);
 
 
                     }
+                    //When the gif is clicked
+                    $(".gif").on("click", function () {
+                        var state = $(this).attr("data-state");
+                        if (state == "still") {
+                            $(this).attr("src", $(this).attr("data-animate"));
+                            $(this).attr("data-state", "moving");
+                        }
+                        else {
+                            $(this).attr("src", $(this).attr("data-still"));
+                            $(this).attr("data-state", "still");
+                        }
+                    });
                 })
 
         })
+
+
 
 
     </script>
